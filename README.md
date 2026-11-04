@@ -7,7 +7,6 @@ All informations can be found at [this link](https://challengedata.ens.fr/challe
 
 The challenge goal is to predict an alarm level between 0 and 1 for 23 classes (the gas itself and its characteristics, e.g. nerve agent or not). Missing an alarm is penalised more than raising a false one because raising a false one doesn't injure anyone but not raining an alarm when the gas is truly toxic risk lives of people.
 
-
 For the data, each sample contains:
 - 8 sensors from two groups of neighbouring sensors: M4–M7 and M12–M15,
 - 4 complementary sensors: S1–S3 and R,

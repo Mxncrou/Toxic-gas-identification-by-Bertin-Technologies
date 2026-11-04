@@ -6,7 +6,7 @@ function bce(ŷ, y; ε=1f-7)
     return -sum(y .* log.(ŷ) .+ (1 .- y) .* log.(1 .- ŷ)) / length(y)
 end
 
-function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=2.5f-4, seed=42)
+function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=5.0f-4, seed=42)
     rng = Xoshiro(seed)
     
     θ, state   = Lux.setup(rng, model)

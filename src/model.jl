@@ -5,7 +5,7 @@ const yshape = 16
 
 network() =
     Chain(
-        Dense(xshape => 128,    tanh), 
-        Dense(   128 => 128,    tanh),
-        Dense(   128 => yshape, sigmoid)
+        Dense(xshape => 256,    tanh), 
+        Dense(   256 => 256,    tanh),
+        Dense(   256 => yshape, sigmoid)
     )
