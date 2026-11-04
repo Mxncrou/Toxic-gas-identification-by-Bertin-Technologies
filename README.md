@@ -16,7 +16,7 @@ For the data, each sample contains:
 The targets are c1–c23, each between 0 and 1.
 
 **Source:** data provided by Bertin Technologies through Challenge Data. Datasets on Challenge Data are distributed under the Licence Ouverte Etalab unless the challenge page states otherwise.
->The data is not included in this repository. Register on the challenge page, download the files and place them in data/:
+>The data is not included in this repository. Register on the challenge page, download the files and place them in data/
 
 # Reference
 
