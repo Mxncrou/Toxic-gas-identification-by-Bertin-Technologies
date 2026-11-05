@@ -1,9 +1,10 @@
 using Lux, Optimisers, Zygote, Random
 include("evaluate.jl")
 
-function bce(ŷ, y; ε=1f-7)
-    ŷ = clamp.(ŷ, ε, 1 - ε) # Avoid numerical issues like log(0)
-    return -sum(y .* log.(ŷ) .+ (1 .- y) .* log.(1 .- ŷ)) / length(y)
+function challenge_mse(ŷ, y)
+    f = ifelse.(y .>= 0.5f0, 1.2f0, 1f0)
+    f = sqrt.(f)
+    return MSELoss()(f .* ŷ, f .* y)
 end
 
 function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=5.0f-4, seed=42)
@@ -22,7 +23,10 @@ function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=
         for idx in Iterators.partition(shuffle(rng, 1:N), batch_size)
 
             x, y = Xtrain[:, idx], Ytrain[:, idx]
-            𝓛, (∇𝓛,)  = Zygote.withgradient(θ -> bce(model(x, θ, state)[1], y), θ)
+            (𝓛, state), (∇𝓛,)  = Zygote.withgradient(θ) do θ
+                ŷ, st = model(x, θ, state)
+                challenge_mse(ŷ, y), st
+            end
                 
             optimiser_state, θ = Optimisers.update(optimiser_state, θ, ∇𝓛)
             loss += 𝓛 * length(idx) # for println the loss
