@@ -6,7 +6,7 @@ const TARGETS  = ["c01", "c02", "c03", "c05", "c08", "c09", "c10", "c11", "c12",
 
 inverse_hyperbolic_sine(x, θ) = asinh(x * θ) / θ
 
-function pre_process(X, Y)
+function pre_process(X, Y, test_p)
     df = innerjoin(X, Y, on=:ID)
     
     θ1 = 1 / 1.0563292914209657 # 1/std of cluster M12–M15
@@ -22,9 +22,22 @@ function pre_process(X, Y)
     Y = Float32.(permutedims(Matrix(df[:, TARGETS])))
 
     shuffled = shuffle(Xoshiro(42), 1:size(X, 2))
-    n_test   = size(X, 2) ÷ 10
+    n_test   = round(Int, size(X, 2) * test_p)
     testing  = shuffled[1:n_test]
     training = shuffled[n_test+1:end]
 
     return X[:, training], Y[:, training], X[:, testing], Y[:, testing]
+end
+
+function pre_process_submission(X)
+    θ1 = 1 / 1.0563292914209657 # 1/std of cluster M12–M15
+    θ2 = 1 / 1.551442317682796  # 1/std of cluster M4–M7
+
+    Humidity           = permutedims(X.Humidity)
+    Sensors_cluster_1  = inverse_hyperbolic_sine.(permutedims(Matrix(X[:, ["M12", "M13", "M14", "M15"]])), θ1)
+    Sensors_cluster_2  = inverse_hyperbolic_sine.(permutedims(Matrix(X[:, ["M4", "M5", "M6", "M7"]])),     θ2)
+    R                  = log.(permutedims(X.R))
+    Additional_sensors = log.(permutedims(Matrix(X[:, ["S1", "S2", "S3"]])))
+
+    return Float32.(vcat(Humidity, Sensors_cluster_1, Sensors_cluster_2, R, Additional_sensors))
 end

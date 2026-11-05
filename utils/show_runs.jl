@@ -2,7 +2,8 @@ using CSV, DataFrames, Plots
 
 function show_runs(path::String = "runs/losses.csv")
     df = CSV.read(path, DataFrame)
-    p  = plot(xlabel = "epoch", ylabel = "loss")
+    p  = plot(xlabel = "epoch", ylabel = "loss",
+              yscale = :log10, size = (1300, 800), margin = 5Plots.mm)
 
     for (i, g) in enumerate(groupby(df, [:run, :model]))
         label = "$(g.model[1]) ($(g.run[1]))"
@@ -10,7 +11,8 @@ function show_runs(path::String = "runs/losses.csv")
         plot!(p, g.epoch, g.test_loss;  color = i, linestyle = :dash, label = label * " test")
     end
 
-    display(plot(p, plot(p; yscale = :log10); layout = (2, 1), size = (1200, 1000), margin = 5Plots.mm))
+    display(p)
+    return p
 end
 
 show_runs()

@@ -6,7 +6,7 @@ function challenge_mse(ŷ, y)
     return MSELoss()(f .* ŷ, f .* y)
 end
 
-function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=5.0f-4, seed=42)
+function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=5.0f-4, seed=42, for_sub)
     rng = Xoshiro(seed)
     
     θ, state   = Lux.setup(rng, model)
@@ -30,14 +30,17 @@ function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=
             optimiser_state, θ = Optimisers.update(optimiser_state, θ, ∇𝓛)
             loss += 𝓛 * length(idx) # for println the loss
         end
-        
-        loss = sqrt(loss / N)
 
+        loss = sqrt(loss / N)
         push!(training_losses, loss)
         
-        evaluation = evaluate(model, θ, state, Xtest, Ytest).loss
-        push!(testing_losses, evaluation)
-        println("Epoch: $epoch, Loss: $(loss), Evaluated loss: $(evaluation)")
+        if !for_sub    
+            evaluation = evaluate(model, θ, state, Xtest, Ytest).loss
+            push!(testing_losses, evaluation)
+            println("Epoch: $epoch, Loss: $(loss), Evaluated loss: $(evaluation)")
+        else
+            println("Epoch: $epoch, Loss: $(loss)")
+        end
     end
     
     return θ, state, training_losses, testing_losses
