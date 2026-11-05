@@ -1,5 +1,4 @@
 using Lux, Optimisers, Zygote, Random
-include("evaluate.jl")
 
 function challenge_mse(ŷ, y)
     f = ifelse.(y .>= 0.5f0, 1.2f0, 1f0)
@@ -32,11 +31,13 @@ function train(model, Xtrain, Ytrain, Xtest, Ytest; epochs, batch_size=1024, lr=
             loss += 𝓛 * length(idx) # for println the loss
         end
         
-        push!(training_losses, loss / N)
+        loss = sqrt(loss / N)
+
+        push!(training_losses, loss)
         
         evaluation = evaluate(model, θ, state, Xtest, Ytest).loss
         push!(testing_losses, evaluation)
-        println("Epoch: $epoch, Loss: $(loss / N), Evaluated loss: $(evaluation)")
+        println("Epoch: $epoch, Loss: $(loss), Evaluated loss: $(evaluation)")
     end
     
     return θ, state, training_losses, testing_losses

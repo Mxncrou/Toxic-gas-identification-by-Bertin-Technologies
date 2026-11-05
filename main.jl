@@ -12,4 +12,4 @@ Y  = CSV.read("data/y_train_R0MqWmu.csv", DataFrame)
 Xtrain, Ytrain, Xtest, Ytest = pre_process(X, Y)
 
 θ, state, train_losses, test_losses = train(HumidityFilmnet(), Xtrain, Ytrain, Xtest, Ytest; epochs=1000)
-register_run(train_losses, test_losses; model = "HumidityFilmnet; d1=256, d2=32")
+register_run(train_losses, test_losses; model = "HumidityFilmnet; d1=256, d2=32, Dropout=0.1 all but Humidity MLP")

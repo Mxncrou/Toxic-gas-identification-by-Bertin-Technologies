@@ -7,8 +7,8 @@ const d2     = 32
 
 MLP() =
     Chain(
-        Dense(xshape => d1,     tanh,    init_weight = orthogonal(; gain = 5f0/3), init_bias = zeros32), 
-        Dense(    d1 => d1,     tanh,    init_weight = orthogonal(; gain = 5f0/3), init_bias = zeros32),
+        Dense(xshape => d1,     tanh,    init_weight = orthogonal(; gain = 5f0/3), init_bias = zeros32), Dropout(0.1),
+        Dense(    d1 => d1,     tanh,    init_weight = orthogonal(; gain = 5f0/3), init_bias = zeros32), Dropout(0.1),
         Dense(    d1 => yshape, sigmoid, init_weight = orthogonal(; gain = 1f0),   init_bias = zeros32)
     )
 
